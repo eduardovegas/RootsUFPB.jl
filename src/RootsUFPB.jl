@@ -11,6 +11,8 @@ include("api.jl")
 
 export
     Range,
+    Bisection,
+    FalsePosition,
     RootDef,
     Root,
     find_root
