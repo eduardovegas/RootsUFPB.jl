@@ -35,22 +35,31 @@ function calculate_root!(r::Root{Method}) where {Method<:BisectOrFalsePos}
     f = rdef.f
     a = range.a
     b = range.b
+    pi_t = @elapsed begin
     print_iteration_header(rdef)
-    i = 1
+    end
+    k = 1
     while true
         f_a, f_b = f.([a, b])
-        next = nextpoint(a, b, rdef.method, f_a=f_a, f_b=f_b)
-        f_next = f(next)
-        print_iteration(i, a, b, f_a, f_b, next, f_next)
+        x_k = nextpoint(a, b, rdef.method, f_a, f_b)
+        f_xk = f(x_k)
+        pi_t += @elapsed begin
+            print_iteration(k, a, b, f_a, f_b, x_k, f_xk)
+        end
         !hasroot(f_a, f_b) && break
-        if iszero(f_next, rdef.ε) || iszero(abs(b-a), rdef.ε)
-            r.root = next
+        if iszero(f_xk, rdef.ε) || iszero(abs(b-a), rdef.ε)
+            r.root = x_k
             break
         end
-        if hasroot(f_a, f_next)
-            b = next
-        elseif hasroot(f_b, f_next)
-            a = next
+        if hasroot(f_a, f_xk)
+            b = x_k
+        elseif hasroot(f_b, f_xk)
+            a = x_k
+        end
+        k += 1
+    end
+    return pi_t
+end
         end
         i += 1
     end
