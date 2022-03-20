@@ -15,6 +15,10 @@ function nextpoint(xₖ::Float64, f_xk::Float64, derivative_xk::Float64, ::Newto
     return xₖ-(f_xk/derivative_xk)
 end
 
+function nextpoint(xₖ::Float64, xₖ₋₁::Float64, f_xk::Float64, f_xk₋₁::Float64, ::Secant)
+    return (xₖ₋₁*f_xk-xₖ*f_xk₋₁)/(f_xk-f_xk₋₁)
+end
+
 function addroot!(r::Root)
     x = r.root
     y = r.rootdef.f(x)

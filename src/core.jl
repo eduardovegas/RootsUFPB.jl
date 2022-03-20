@@ -44,7 +44,7 @@ function calculate_root!(r::Root{Method}) where {Method<:BisectOrFalsePos}
         x_k = nextpoint(a, b, rdef.method, f_a, f_b)
         f_xk = f(x_k)
         pi_t += @elapsed begin
-            print_iteration(k, a, b, f_a, f_b, x_k, f_xk)
+            print_iteration(k, a, b, f_a, f_b, x_k, f_xk, rdef)
         end
         !hasroot(f_a, f_b) && break
         if iszero(f_xk, rdef.ε) || iszero(abs(b-a), rdef.ε)
@@ -76,7 +76,7 @@ function calculate_root!(r::Root{Method}) where {Method<:Newton}
         f_xk = f(xₖ)
         derivative_xk = f'(xₖ)
         pi_t += @elapsed begin
-            print_iteration(k, xₖ, xₖ₋₁, f_xk, derivative_xk)
+            print_iteration(k, xₖ, xₖ₋₁, f_xk, derivative_xk, rdef)
         end
         if iszero(f_xk, rdef.ε) || iszero(abs(xₖ-xₖ₋₁), rdef.ε)
             r.root = xₖ
@@ -84,6 +84,36 @@ function calculate_root!(r::Root{Method}) where {Method<:Newton}
         end
         xₖ₋₁ = xₖ
         xₖ = nextpoint(xₖ, f_xk, derivative_xk, rdef.method)
+        k += 1
+    end
+    return pi_t
+end
+
+function calculate_root!(r::Root{Method}) where {Method<:Secant}
+    rdef = r.rootdef
+    range = rdef.range
+    f = rdef.f
+    x₀ = rdef.method.x₀
+    x₁ = rdef.method.x₁
+    xₖ₋₁ = x₀ === nothing ? rand(range.a:1e-4:range.b) : x₀
+    xₖ = x₁ === nothing ? rand(range.a:1e-4:range.b) : x₁
+    pi_t = @elapsed begin
+        print_iteration_header(rdef)
+    end
+    k = 1
+    while true
+        f_xk₋₁, f_xk = f.([xₖ₋₁, xₖ])
+        xₖ₊₁ = nextpoint(xₖ, xₖ₋₁, f_xk, f_xk₋₁, rdef.method)
+        f_xk₊₁ = f(xₖ₊₁)
+        pi_t += @elapsed begin
+            print_iteration(k, xₖ₋₁, xₖ, xₖ₊₁, f_xk₋₁, f_xk, f_xk₊₁, rdef)
+        end
+        if iszero(f_xk₊₁, rdef.ε) || iszero(abs(f_xk₊₁-xₖ), rdef.ε)
+            r.root = xₖ₊₁
+            break
+        end
+        xₖ₋₁ = xₖ
+        xₖ = xₖ₊₁
         k += 1
     end
     return pi_t

@@ -31,6 +31,12 @@ function run_unit_tests()
             @test RootsUFPB.nextpoint(xₖ, f_xk, derivative_xk, RootsUFPB.Newton()) ==
                 (xₖ-(f_xk/derivative_xk))
         end
+
+        @testset "Secant next point" begin
+            xₖ₋₁, xₖ, f_xk₋₁, f_xk = rand(4)
+            @test RootsUFPB.nextpoint(xₖ₋₁, xₖ, f_xk₋₁, f_xk, RootsUFPB.Secant()) ==
+                (xₖ₋₁*f_xk-xₖ*f_xk₋₁)/(f_xk-f_xk₋₁)
+        end
     end
     return nothing
 end

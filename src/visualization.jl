@@ -14,15 +14,24 @@ function print_iteration_header(::RootDef{Method}) where {Method<:Newton}
     return nothing
 end
 
+function print_iteration_header(::RootDef{Method}) where {Method<:Secant}
+    method_str = Method("")
+    @info "$method_str started"
+    @info "       |                                           root                                           |"
+    @info " iter. |       xₖ₋₁ |         xₖ |       xₖ₊₁ |    f(xₖ₋₁) |      f(xₖ) |    f(xₖ₊₁) |  xₖ₊₁ - xₖ |"
+    return nothing
+end
+
 function print_iteration(
     id::Int,
-    a::T,
-    b::T,
-    f_a::T,
-    f_b::T,
-    x_k::T,
-    f_xk::T
-) where {T<:Float64}
+    a::Float64,
+    b::Float64,
+    f_a::Float64,
+    f_b::Float64,
+    x_k::Float64,
+    f_xk::Float64,
+    ::RootDef{Method}
+) where {Method<:BisectOrFalsePos}
     str = @sprintf(
         " %5d | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f |",
         id,
@@ -40,11 +49,12 @@ end
 
 function print_iteration(
     id::Int,
-    xₖ::T,
-    xₖ₋₁::T,
-    f_xk::T,
-    derivative_xk::T,
-) where {T<:Float64}
+    xₖ::Float64,
+    xₖ₋₁::Float64,
+    f_xk::Float64,
+    derivative_xk::Float64,
+    ::RootDef{Method}
+) where {Method<:Newton}
     str = @sprintf(
         " %5d | %10.4f | %10.4f | %10.4f | %10.4f |",
         id,
@@ -52,6 +62,31 @@ function print_iteration(
         f_xk,
         derivative_xk,
         abs(xₖ-xₖ₋₁)
+    )
+    @info str
+    return nothing
+end
+
+function print_iteration(
+    id::Int,
+    xₖ₋₁::Float64,
+    xₖ::Float64,
+    xₖ₊₁::Float64,
+    f_xk₋₁::Float64,
+    f_xk::Float64,
+    f_xk₊₁::Float64,
+    ::RootDef{Method}
+) where {Method<:Secant}
+    str = @sprintf(
+        " %5d | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f |",
+        id,
+        xₖ₋₁,
+        xₖ,
+        xₖ₊₁,
+        f_xk₋₁,
+        f_xk,
+        f_xk₊₁,
+        abs(xₖ₊₁-xₖ)
     )
     @info str
     return nothing

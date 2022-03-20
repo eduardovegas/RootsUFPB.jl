@@ -41,6 +41,20 @@ function run_integration_tests()
             @show r
             @test r.root == ς
         end
+
+        @testset "Secant method" begin
+            rootdef = RootsUFPB.RootDef(
+                "x²ln(x)-1 Secant.png",
+                (x) -> x^2*log(x)-1,
+                RootsUFPB.Range(0.1, 2),
+                2e-3,
+                RootsUFPB.Secant(1.3075, 1.8714)
+            )
+            ς = 1.5319059631577356
+            r = RootsUFPB.find_root(rootdef)
+            @show r
+            @test r.root == ς
+        end
     end
     return nothing
 end

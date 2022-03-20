@@ -7,9 +7,15 @@ struct FalsePosition <: BisectOrFalsePos end
     x₀::Union{Float64,Nothing} = nothing
 end
 
+@Base.kwdef struct Secant <: AbstractMethod
+    x₀::Union{Float64,Nothing} = nothing
+    x₁::Union{Float64,Nothing} = nothing
+end
+
 Bisection(::String) = "Bisection"
 FalsePosition(::String) = "False Position"
 Newton(::String) = "Newton"
+Secant(::String) = "Secant"
 
 struct Range
     a::Float64
