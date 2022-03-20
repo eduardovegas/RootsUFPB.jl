@@ -14,6 +14,7 @@ export
     Bisection,
     FalsePosition,
     Newton,
+    Secant,
     RootDef,
     Root,
     find_root
