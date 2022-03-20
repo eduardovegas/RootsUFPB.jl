@@ -14,6 +14,21 @@ function prepare_root(rootdef::RootDef)
     return r
 end
 
+function time_root_calculation!(r::Root)
+    pi_t = 0
+    err_t = 0
+    total_t = @elapsed begin
+        try
+            pi_t = calculate_root!(r)
+        catch e
+            err_t = @elapsed begin
+                save_error_backtrace()
+            end
+        end
+    end
+    return total_t - (pi_t + err_t)
+end
+
 function calculate_root!(r::Root{Method}) where {Method<:BisectOrFalsePos}
     rdef = r.rootdef
     range = rdef.range
