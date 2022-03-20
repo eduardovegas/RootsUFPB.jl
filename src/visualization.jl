@@ -38,6 +38,25 @@ function print_iteration(
     return nothing
 end
 
+function print_iteration(
+    id::Int,
+    xₖ::T,
+    xₖ₋₁::T,
+    f_xk::T,
+    derivative_xk::T,
+) where {T<:Float64}
+    str = @sprintf(
+        " %5d | %10.4f | %10.4f | %10.4f | %10.4f |",
+        id,
+        xₖ,
+        f_xk,
+        derivative_xk,
+        abs(xₖ-xₖ₋₁)
+    )
+    @info str
+    return nothing
+end
+
 function Base.show(io::IO, rootdef::RootDef{Method}) where {Method<:AbstractMethod}
     println(io, "File Name : ", rootdef.filename)
     println(io, "     From : ", rootdef.range.a)

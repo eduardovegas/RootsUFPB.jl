@@ -1,7 +1,7 @@
 module RootsUFPB
 
 import Plots, PlotlyJS
-using Printf
+using Printf, CalculusWithJulia
 
 include("structs.jl")
 include("visualization.jl")
@@ -13,6 +13,7 @@ export
     Range,
     Bisection,
     FalsePosition,
+    Newton,
     RootDef,
     Root,
     find_root

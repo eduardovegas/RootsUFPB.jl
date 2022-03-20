@@ -11,6 +11,10 @@ function nextpoint(a::Float64, b::Float64, ::FalsePosition, f_a::Float64, f_b::F
     return (a*mod_fb+b*mod_fa)/(mod_fb+mod_fa)
 end
 
+function nextpoint(xₖ::Float64, f_xk::Float64, derivative_xk::Float64, ::Newton)
+    return xₖ-(f_xk/derivative_xk)
+end
+
 function addroot!(r::Root)
     x = r.root
     y = r.rootdef.f(x)

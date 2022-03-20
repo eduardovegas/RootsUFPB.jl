@@ -60,10 +60,33 @@ function calculate_root!(r::Root{Method}) where {Method<:BisectOrFalsePos}
     end
     return pi_t
 end
-        end
-        i += 1
+
+function calculate_root!(r::Root{Method}) where {Method<:Newton}
+    rdef = r.rootdef
+    range = rdef.range
+    f = rdef.f
+    x₀ = rdef.method.x₀
+    xₖ₋₁ = NaN
+    xₖ = x₀ === nothing ? rand(range.a:1e-4:range.b) : x₀
+    pi_t = @elapsed begin
+        print_iteration_header(rdef)
     end
-    return r
+    k = 1
+    while true
+        f_xk = f(xₖ)
+        derivative_xk = f'(xₖ)
+        pi_t += @elapsed begin
+            print_iteration(k, xₖ, xₖ₋₁, f_xk, derivative_xk)
+        end
+        if iszero(f_xk, rdef.ε) || iszero(abs(xₖ-xₖ₋₁), rdef.ε)
+            r.root = xₖ
+            break
+        end
+        xₖ₋₁ = xₖ
+        xₖ = nextpoint(xₖ, f_xk, derivative_xk, rdef.method)
+        k += 1
+    end
+    return pi_t
 end
 
 function save_graph!(r::Root)
