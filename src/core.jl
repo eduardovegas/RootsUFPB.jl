@@ -47,3 +47,12 @@ function save_graph!(r::Root)
     Plots.savefig(r.graph, string(r.rootdef.filename))
     return nothing
 end
+
+function save_error_backtrace()
+    bu = open("error.log", "w")
+    for (exc, bt) in current_exceptions()
+        showerror(bu, exc, bt)
+    end
+    close(bu)
+    return nothing
+end
