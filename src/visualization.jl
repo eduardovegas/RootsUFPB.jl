@@ -2,7 +2,15 @@ function print_iteration_header(::RootDef{Method}) where {Method<:BisectOrFalseP
     method_str = Method("")
     @info "$method_str started"
     @info "       |          range          |         f(range)        |                 root                 |"
-    @info " iter. |          a |          b |       f(a) |       f(b) |       next |    f(next) |      b - a |"
+    @info " iter. |          a |          b |       f(a) |       f(b) |         xₖ |      f(xₖ) |      b - a |"
+    return nothing
+end
+
+function print_iteration_header(::RootDef{Method}) where {Method<:Newton}
+    method_str = Method("")
+    @info "$method_str started"
+    @info "       |                        root                       |"
+    @info " iter. |         xₖ |      f(xₖ) |     f'(xₖ) |  xₖ - xₖ₋₁ |"
     return nothing
 end
 
@@ -12,8 +20,8 @@ function print_iteration(
     b::T,
     f_a::T,
     f_b::T,
-    next::T,
-    f_next::T
+    x_k::T,
+    f_xk::T
 ) where {T<:Float64}
     str = @sprintf(
         " %5d | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f | %10.4f |",
@@ -22,8 +30,8 @@ function print_iteration(
         b,
         f_a,
         f_b,
-        next,
-        f_next,
+        x_k,
+        f_xk,
         abs(b-a)
     )
     @info str
@@ -43,7 +51,7 @@ function Base.show(io::IO, root::Root)
     println(io)
     println(io, " RootUFPB : ")
     print(io, root.rootdef)
-    println(io, "     Time : ", root.time_in_seconds, "s")
-    println(io, "     Root : ", root.root)
+    println(io, "     Time : ", @sprintf("%.4fs", root.time_in_seconds))
+    println(io, "     Root : ", @sprintf("%.4f", root.root))
     return nothing
 end

@@ -36,7 +36,7 @@ function calculate_root!(r::Root{Method}) where {Method<:BisectOrFalsePos}
     a = range.a
     b = range.b
     pi_t = @elapsed begin
-    print_iteration_header(rdef)
+        print_iteration_header(rdef)
     end
     k = 1
     while true
