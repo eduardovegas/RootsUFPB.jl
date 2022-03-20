@@ -22,8 +22,14 @@ function run_unit_tests()
 
         @testset "False Position next point" begin
             a, f_a, b, f_b = rand(4)
-            @test RootsUFPB.nextpoint(a, b, RootsUFPB.FalsePosition(), f_a=f_a, f_b=f_b) ==
+            @test RootsUFPB.nextpoint(a, b, RootsUFPB.FalsePosition(), f_a, f_b) ==
                 (a*abs(f_b)+b*abs(f_a))/(abs(f_b)+abs(f_a))
+        end
+
+        @testset "Newton next point" begin
+            xₖ, f_xk, derivative_xk = rand(3)
+            @test RootsUFPB.nextpoint(xₖ, f_xk, derivative_xk, RootsUFPB.Newton()) ==
+                (xₖ-(f_xk/derivative_xk))
         end
     end
     return nothing

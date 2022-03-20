@@ -27,6 +27,20 @@ function run_integration_tests()
             @show r
             @test r.root == ς
         end
+
+        @testset "Newton method" begin
+            rootdef = RootsUFPB.RootDef(
+                "x²ln(x)-1 Newton.png",
+                (x) -> x^2*log(x)-1,
+                RootsUFPB.Range(0.1, 2),
+                2e-3,
+                RootsUFPB.Newton(1.2150)
+            )
+            ς = 1.531615036354796
+            r = RootsUFPB.find_root(rootdef)
+            @show r
+            @test r.root == ς
+        end
     end
     return nothing
 end
