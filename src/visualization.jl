@@ -105,7 +105,7 @@ function Base.show(io::IO, root::Root)
     println(io)
     println(io, " RootUFPB : ")
     print(io, root.rootdef)
-    println(io, "     Time : ", @sprintf("%.4fs", root.time_in_seconds))
-    println(io, "     Root : ", @sprintf("%.4f", root.root))
+    println(io, "     Time : ", @sprintf("%.6fs", root.time_in_seconds))
+    println(io, "     Root : ", @sprintf("%.6f", root.root))
     return nothing
 end
