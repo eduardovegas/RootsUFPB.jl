@@ -106,6 +106,6 @@ function Base.show(io::IO, root::Root)
     println(io, " RootUFPB : ")
     print(io, root.rootdef)
     println(io, "     Time : ", @sprintf("%.6fs", root.time_in_seconds))
-    println(io, "     Root : ", @sprintf("%.6f", root.root))
+    println(io, "     Root : ", root.root !== missing ? @sprintf("%.6f", root.root) : "missing")
     return nothing
 end
